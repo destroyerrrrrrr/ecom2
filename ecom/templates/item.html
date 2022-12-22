@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block content%}
+  <div class="row">
+    <div class="col-lg-3 my-4">
+      <a href="{{ url_for('edit_item', id = item.id) }}" class="btn btn-info">Update Item</a>
+      <form action="{{ url_for('delete_item', id=item.id) }}" method="post" class="delete-form">
+        <!--          {{ deleteItemForm.hidden_tag }}-->
+        {{ deleteItemForm.submit(class="btn btn-danger", onclick="return confirm('Are you sure you want to delete this item ?');") }}
+      </form>
+
+    </div>
+    <div class="col-lg-5">
+      <div class="card mt-3 border-0">
+        <div class="embeded-responsive embeded-responsive-16by9">
+          <a href="{{ url_for('edit_item', id=item.id) }}">
+            <img class="card-img-top embed-responsive-item" src=" {% if item.img %}
+                                    {{ url_for('uploads', filename= item.img) }}
+                                {% else %}
+                                {{ url_for('static', filename='/images/placeholder.png') }}
+                                {% endif %} " alt="">
+          </a>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">
+            {{ item.title }}
+          </h3>
+          <h4 class="">{{ "Rs.%.2f" | format(item.price) }}</h4>
+          <p>{{ item.description }}</p>
+          <div class="card-footer">
+              <small class="text-muted">
+                  {{item.category}}-> {{item.sub_category}}
+              </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card card-outline-secondary my-4 border-0 ">
+      <div class="card-header border-2 ">
+        Product Review
+      </div>
+      <div class="card-body ">
+        <p>Some Commment</p>
+        <small>Posted by Anonymous</small>
+        <hr>
+        <p>Some Commment</p>
+        <small>Posted by Anonymous</small>
+        <hr>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+Types of form's we're gonna use in this model......
+
+1. Create item form.
+
+2. Update item form.
+
+3. Delete item from.
+
+4. Filter form.
+
+5. Comment form.
+
+While submitting image into the database, need to consider the three things :
+
+1. File has a name.
+
+2. Filename is allowed (secure).
+
+3. Filetype is allowed.
+
+4. Filesize is allowed.

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% set active_page='home' %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block content%}
+<div class="row">
+    <div class="col-lg-3 my-4">
+        <div class="my-10">
+            <div class="card-header border-2">
+                <h1>Filter</h1>
+            </div>
+                <br><br><br>
+            <form action="{{ url_for('home') }}" method="get">
+                <div class="form-group">
+                    {{ form.price.label }}
+                    {{ form.price(class="form-select") }}
+                </div>
+                <hr>
+                {{ form.submit(class = "btn btn-primary form-control") }}
+            </form>
+
+
+
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="row my-5 ">
+            {%  if items %}
+                {% for item in items %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 border-0">
+                        <div class="embeded-responsive embeded-responsive-16by9">
+                            <a href="{{ url_for('item', id=item.id) }}">
+                                <img class="card-img-top embed-responsive-item" src="
+                                {% if item.img %}
+                                    {{ url_for('uploads', filename= item.img) }}
+                                {% else %}
+                                {{ url_for('static', filename='/images/placeholder.png') }}
+                                {% endif %}
+                            " alt="">
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">{{ item.title }}</h4>
+                            <h5>{{ "Rs.%.2f" | format(item.price)}}</h5>
+                            <p class="card-text">{{ item.description }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                {{item.category}}-> {{item.sub_category}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Currently we dont have the items....</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
