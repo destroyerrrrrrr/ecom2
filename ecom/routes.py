@@ -97,8 +97,8 @@ def edit_item(id):
     item = Items.query.filter_by(id=id).first()
     if item:
         form = EditItemForm()
-
         if form.validate_on_submit():
+
             form.populate_obj(item)
             db.session.commit()
             flash("Item {} has been sucessfully updated".format(form.title.data), "success")
@@ -114,14 +114,9 @@ def edit_item(id):
 @app.route("/add/item", methods=["GET", "POST"])
 def additem():
     form = AddItemForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and form.image.validate(form, extra_validators=(FileRequired(),)):
 
-        format = "%Y%m%dT%H%M%S"
-        now = datetime.datetime.utcnow().strftime(format)
-        random_string = token_hex(2)
-        filename = random_string + "_" + now + "_" + form.image.data.filename
-        filename = secure_filename(filename)
-        form.image.data.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+        filename = save_image_upload(form.image)
 
         title = form.title.data
         price = form.price.data
@@ -139,6 +134,16 @@ def additem():
         flash("{}".format(form.errors), "danger")
     else:
         return render_template("add_item.html", form=form)
+
+
+def save_image_upload(image):
+    format = "%Y%m%dT%H%M%S"
+    now = datetime.datetime.utcnow().strftime(format)
+    random_string = token_hex(2)
+    filename = random_string + "_" + now + "_" + image.data.filename
+    filename = secure_filename(filename)
+    image.data.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+    return filename
 
 
 

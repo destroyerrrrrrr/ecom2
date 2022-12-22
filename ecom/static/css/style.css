@@ -7,11 +7,13 @@ body {
     padding-bottom : 0rem;
 }
 
-.card-img-top{
-    object-fit: cover;
+.card{
+  width: 250px;
+  height: 200px;
+  object-fit: cover;
 }
 
-a:hover{
+.a-tag {
     text-decoration: none;
 }
 
