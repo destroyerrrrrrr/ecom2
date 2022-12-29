@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %} Excel data Page {% endblock %}
+
+{% block content %}
+<!-- show_data.html -->
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First_Name</th>
+                <th>Last_Name</th>
+                <th>Gender</th>
+                <th>Country</th>
+                <th>Age</th>
+                <th>Date</th>
+                <th>Client_ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.First_Name }}</td>
+                <td>{{ item.Last_Name }}</td>
+                <td>{{ item.Gender }}</td>
+                <td>{{ item.Country }}</td>
+                <td>{{ item.Age }}</td>
+                <td>{{ item.Date }}</td>
+                <td>{{ item.Client_Id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

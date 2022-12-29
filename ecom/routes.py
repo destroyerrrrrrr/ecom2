@@ -1,18 +1,16 @@
-import base64
-import io
-from flask import request, render_template, redirect, url_for, flash, send_from_directory
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileRequired
 from wtforms import StringField, TextAreaField, SubmitField, SelectField, DecimalField, FileField
+from flask import request, render_template, redirect, url_for, flash, send_from_directory
 from wtforms.validators import InputRequired, DataRequired, Length
+from flask_wtf.file import FileAllowed, FileRequired
 from werkzeug.utils import secure_filename
-from ecom.models import Items
-from ecom import app
+from flask_wtf import FlaskForm
+from secrets import token_hex
+from ecom.models import Items, ExcelData
 from sqlalchemy import desc
+from ecom import app
 from ecom import db
 import datetime
 import os
-from secrets import token_hex
 
 
 class AddItemForm(FlaskForm):
@@ -22,7 +20,8 @@ class AddItemForm(FlaskForm):
     sub_category = SelectField("Sub-Category", choices=[('AP', 'APPLE'), ('BN', 'BANANA'), ('PS-5', 'PLAY STATION 5')])
     description = TextAreaField("Description",
                                 validators=[InputRequired("Input is required !"), DataRequired("Data is required")])
-    image = FileField("Image", validators=[FileRequired(), FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], "Images Only")])
+    image = FileField("Image",
+                      validators=[FileRequired(), FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], "Images Only")])
     submit = SubmitField("Submit")
 
 
@@ -34,7 +33,7 @@ class EditItemForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired("Input is required !"), DataRequired("Data is required")])
     price = DecimalField("Price", validators=[InputRequired("Input is required !"), DataRequired("Data is required")])
     description = StringField("Description",
-                                validators=[InputRequired("Input is required !"), DataRequired("Data is required")])
+                              validators=[InputRequired("Input is required !"), DataRequired("Data is required")])
     submit = SubmitField("Update")
 
 
@@ -63,6 +62,12 @@ def home():
     else:
         pass
     return render_template("home.html", items=items, form=form)
+
+
+@app.route('/data', methods=['GET', 'POST'])
+def get_excel_data():
+    data = ExcelData.query.all()
+    return render_template("excel_data.html", data=data)
 
 
 @app.route("/item/<id>", methods=['GET', 'POST'])
@@ -98,7 +103,6 @@ def edit_item(id):
     if item:
         form = EditItemForm()
         if form.validate_on_submit():
-
             form.populate_obj(item)
             db.session.commit()
             flash("Item {} has been sucessfully updated".format(form.title.data), "success")
@@ -115,7 +119,6 @@ def edit_item(id):
 def additem():
     form = AddItemForm()
     if form.validate_on_submit() and form.image.validate(form, extra_validators=(FileRequired(),)):
-
         filename = save_image_upload(form.image)
 
         title = form.title.data
@@ -144,7 +147,3 @@ def save_image_upload(image):
     filename = secure_filename(filename)
     image.data.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
     return filename
-
-
-
-
